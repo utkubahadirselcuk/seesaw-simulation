@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seesaw Balance</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="parameters">
+            <div class="parameter-box">
+                <div class="parameter-label">Left Weight</div>
+                <div class="parameter-value" id="left-weight">0.0 kg</div>
+            </div>
+            <div class="parameter-box">
+                <div class="parameter-label">Next Weight</div>
+                <div class="parameter-value" id="next-weight">0.0 kg</div>
+            </div>
+
+            <div class="parameter-box">
+                <div class="parameter-label">Angle</div>
+                <div class="parameter-value" id="angle">0.0</div>
+            </div>
+            <div class="parameter-box">
+                <div class="parameter-label">Right Weight</div>
+                <div class="parameter-value" id="right-weight">0.0 kg</div>
+            </div>
+        </div>
+
+        <div class="click-hint">Click anywhere to drop a ball</div>
+        <div class="seesaw-cont" id="seesaw-cont">
+            <div class="ball-preview" id="ball-preview"></div>
+            <div class="seesaw-wrapper" id="seesaw-wrapper">
+                <div class="plank-scale" id="plank-scale"></div>
+                <div class="pivot"></div>
+                <div class="plank" id="plank"></div>
+            </div>
+            <div class="floor"></div>
+        </div>
+        <div class="control">
+            <button class="btn reset" id="reset">Reset</button>
+            <button class="btn pause" id="pause">Pause</button>
+        </div>
+        <div class="history-section">
+            <h3 class="history-title">History</h3>
+            <div class="history-list" id="history-list"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
