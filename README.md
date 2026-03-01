@@ -2,6 +2,8 @@
 
 A simple seesaw simulation built with HTML, CSS, and JavaScript. Drop balls onto the seesaw and watch it tilt based on torque (weight × distance from pivot).
 
+# File Breakdown
+
 # index.html — Page Structure
 
 | Section | Lines | Purpose |
@@ -22,6 +24,8 @@ A simple seesaw simulation built with HTML, CSS, and JavaScript. Drop balls onto
 - `history-list` — History items container
 - `left-weight`, `right-weight`, `next-weight`, `angle` — Display values
 - `reset`, `pause` — Buttons
+
+---
 
 # style.css — Styling
 
@@ -54,6 +58,8 @@ A simple seesaw simulation built with HTML, CSS, and JavaScript. Drop balls onto
 | | 296-311 | `.side.left` (red tint), `.side.right` (green tint) |
 | Ball colors | 313-318 | Same 10 colors for `.obj` on plank |
 
+---
+
 # script.js — Logic
 
 The script runs in an IIFE. All variables and functions are local.
@@ -64,9 +70,6 @@ The script runs in an IIFE. All variables and functions are local.
 | `PLANK_LENGTH` | 400 | Plank width in px |
 | `PIVOT_CENTER` | 200 | Center of plank |
 | `STORAGE_KEY` | 'seesawState' | localStorage key for save/load |
-
-# DOM References (Lines 8-18)
-Elements used throughout the script.
 
 # State (Lines 20-24)
 | Variable | Purpose |
@@ -117,7 +120,7 @@ Elements used throughout the script.
 3. `updateUI()` — fills parameter displays  
 4. `renderHistory()` — fills history list  
 
-
+---
 
 # Flow Overview
 
@@ -138,12 +141,62 @@ Elements used throughout the script.
 - `position < 200` → left; `position >= 200` → right.
 - Screen X to plank X uses `position = 200 + (clickX - plankCenterX) / cos(angle)`.
 
+---
+
+# Thought Process & Design Decisions
+
+# Interaction: click vs drag-and-drop
+- **Choice:** Click anywhere in the seesaw area to drop a ball at that horizontal position.
+- **Reasoning:** Drag-and-drop from a fixed “ball source” was tried first; it was replaced with “click to drop” so the ball appears exactly where the user intends. The drop is only valid when the projected position lies on the plank (0–400 px).
+
+# Where the ball lands
+- **Choice:** Map screen X to plank position using the current plank angle: `position = 200 + (clickX - plankCenterX) / cos(angle)`.
+- **Reasoning:** The plank rotates, so a vertical line at `clickX` hits the plank at one point. Projecting that point onto the plank’s local axis gives a consistent 0–400 position. Clicks that project outside [0, 400] are rejected so balls never “snap” to the ends.
+
+# Visual feedback
+- **Preview ball:** A semi-transparent ball follows the mouse only inside the seesaw box, showing the next weight. This makes it clear where a ball would go and that the area is interactive.
+- **Falling ball:** A full-size colored ball animates from the click position down to the plank. The same 10 color classes are used for both the falling ball (`.ball-falling.color-X`) and the ball on the plank (`.obj.color-X`) so the transition looks consistent.
+
+# State and persistence
+- **Choice:** One state object (objects + dropHistory) saved to `localStorage` on every change (after drop, reset).
+- **Reasoning:** Keeps the logic simple and ensures refresh doesn’t lose progress. No separate “save” button; the UI is always in sync with stored state.
+
+# Torque and angle
+- **Formula:** `angle = clamp((rightTorque - leftTorque) / 10, -30, 30)`.
+- **Reasoning:** The divisor 10 scales the torque difference to a reasonable tilt range; ±30° avoids extreme angles and keeps the plank visible. The plank and scale share the same `rotate()` so the ruler stays aligned with the plank.
+
+# Structure
+- **No framework:** Plain HTML/CSS/JS keeps the project easy to open in any browser and to explain in a README.
+
+# Trade-offs & Limitations
+
+# No real physics
+- Balls don’t roll, bounce, or collide. They’re placed at a position and the tilt is computed from torque only. The “fall” is a CSS animation to the plank, not a simulation. Acceptable for a simple balance demo; not suitable if you need realistic motion.
+
+# Click only on the seesaw area
+- Drops are accepted only when the click is inside `seesaw-cont` and the projected position is between 0 and 400. Clicks outside the plank (e.g. in the gray margin of the box) do nothing. This avoids balls appearing at the ends when the user clearly clicked off the plank.
+
+# Fixed plank length and scale
+- Plank is 400 px; the scale and math are hardcoded to that. Making the plank responsive would require recalculating positions and possibly rethinking the scale labels.
+
+# Falling ball is a separate element
+- The falling ball is a temporary `div` with `position: fixed`, animated with CSS custom properties (`--drop-dx`, `--drop-dy`). After 600 ms it’s removed and the “real” ball is added to the plank. If the user clicks again before the animation ends, two animations can run at once; we don’t queue or block. Could be improved with a short cooldown or a queue.
+
+# Scale and plank rotation
+- The scale (ticks and labels) uses the same `rotate(angle)` as the plank so it tilts with it. The labels are in CSS (`::before` content); they don’t update with the angle. For a more advanced version you could generate labels in JS or show “distance from pivot” in a different way.
+
+# localStorage only
+- State is stored only in the browser. Clearing site data or using another device/browser loses progress. No backend, no export/import.
+
+# Pause only blocks new drops
+- “Pause” prevents new balls from being dropped; it doesn’t freeze the current tilt or hide the preview. The plank stays as is. A stricter pause could also hide the preview and optionally dim the area.
+
 # How to Run
 
 Open `index.html` in a browser. No server or build step needed.
 
 # Tech Stack
 
-- HTML  
-- CSS (flexbox, transforms, animations, transitions)  
-- JavaScript (no frameworks or libraries)
+- HTML
+- CSS
+- JavaScript
