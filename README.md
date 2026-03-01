@@ -62,6 +62,8 @@ A simple seesaw simulation built with HTML, CSS, and JavaScript. Drop balls onto
 
 # script.js — Logic
 
+The script runs in an IIFE. All variables and functions are local.
+
 # Constants (Lines 4-6)
 | Name | Value | Purpose |
 |------|-------|---------|
@@ -149,7 +151,7 @@ A simple seesaw simulation built with HTML, CSS, and JavaScript. Drop balls onto
 
 # Where the ball lands
 - **Choice:** Map screen X to plank position using the current plank angle: `position = 200 + (clickX - plankCenterX) / cos(angle)`.
-- **Reasoning:** The plank rotates, so a vertical line at `clickX` hits the plank at one point. Projecting that point onto the plank’s local axis gives a consistent 0–400 position. However, it did not work. 
+- **Reasoning:** The plank rotates, so a vertical line at `clickX` hits the plank at one point. Projecting that point onto the plank’s local axis gives a consistent 0–400 position. Clicks that project outside [0, 400] are rejected so balls never “snap” to the ends.
 
 # Visual feedback
 - **Preview ball:** A semi-transparent ball follows the mouse only inside the seesaw box, showing the next weight. This makes it clear where a ball would go and that the area is interactive.
@@ -163,16 +165,25 @@ A simple seesaw simulation built with HTML, CSS, and JavaScript. Drop balls onto
 - **Formula:** `angle = clamp((rightTorque - leftTorque) / 10, -30, 30)`.
 - **Reasoning:** The divisor 10 scales the torque difference to a reasonable tilt range; ±30° avoids extreme angles and keeps the plank visible. The plank and scale share the same `rotate()` so the ruler stays aligned with the plank.
 
+# Structure
+- **No framework:** Plain HTML/CSS/JS keeps the project easy to open in any browser and to explain in a README.
+
 # Trade-offs & Limitations
 
 # No real physics
-- Balls don’t roll, bounce, or collide. They’re placed at a position and the tilt is computed from torque only. The “fall” is a CSS animation to the plank, not a simulation.
+- Balls don’t roll, bounce, or collide. They’re placed at a position and the tilt is computed from torque only. The “fall” is a CSS animation to the plank, not a simulation. Acceptable for a simple balance demo; not suitable if you need realistic motion.
 
 # Click only on the seesaw area
-- Drops are accepted only when the click is inside `seesaw-cont` and the projected position is between 0 and 400. Clicks outside the plank (e.g. in the gray margin of the box) do nothing. This avoids balls appearing at the ends when the user clearly clicked off the plank. It took a lot of time to do that. 
+- Drops are accepted only when the click is inside `seesaw-cont` and the projected position is between 0 and 400. Clicks outside the plank (e.g. in the gray margin of the box) do nothing. This avoids balls appearing at the ends when the user clearly clicked off the plank.
 
 # Fixed plank length and scale
 - Plank is 400 px; the scale and math are hardcoded to that. Making the plank responsive would require recalculating positions and possibly rethinking the scale labels.
+
+# Falling ball is a separate element
+- The falling ball is a temporary `div` with `position: fixed`, animated with CSS custom properties (`--drop-dx`, `--drop-dy`). After 600 ms it’s removed and the “real” ball is added to the plank. If the user clicks again before the animation ends, two animations can run at once; we don’t queue or block. Could be improved with a short cooldown or a queue.
+
+# Scale and plank rotation
+- The scale (ticks and labels) uses the same `rotate(angle)` as the plank so it tilts with it. The labels are in CSS (`::before` content); they don’t update with the angle. For a more advanced version you could generate labels in JS or show “distance from pivot” in a different way.
 
 # localStorage only
 - State is stored only in the browser. Clearing site data or using another device/browser loses progress. No backend, no export/import.
