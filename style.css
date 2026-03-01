@@ -1,0 +1,402 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: whitesmoke;
+    min-height: 100vh;
+    color: bisque;
+    padding: 20px;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.parameters {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.parameter-box {
+    background: #fff;
+    border: 1 px solid grey;
+    padding: 10px 15px;
+    flex: 1;
+    min-width: 80px;
+    text-align: center;
+}
+
+.parameter-label {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.parameter-value {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.click-hint {
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.ball-falling {
+    position: fixed;
+    pointer-events: none;
+    z-index: 100;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ball-falling.color-1 {
+    background: #e53935;
+}
+
+.ball-falling.color-2 {
+    background: #1976d2;
+}
+
+.ball-falling.color-3 {
+    background: #7b1fa2;
+}
+
+.ball-falling.color-4 {
+    background: #00897b;
+}
+
+.ball-falling.color-5 {
+    background: #f9a825;
+}
+
+.ball-falling.color-6 {
+    background: #5e35b1;
+}
+
+.ball-falling.color-7 {
+    background: #00acc1;
+}
+
+.ball-falling.color-8 {
+    background: #d84315;
+}
+
+.ball-falling.color-9 {
+    background: #7e57c2;
+}
+
+.ball-falling.color-10 {
+    background: #43a047;
+}
+
+.ball-falling span {
+    position: absolute;
+    bottom: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    font-weight: bold;
+    white-space: nowrap;
+    color: #333;
+}
+
+.ball-falling.animating {
+    animation: ballDrop 0.6s ease-in forwards;
+}
+
+@keyframes ballDrop {
+    0% {
+        transform: translate(-50%, -50%);
+    }
+    100% {
+        transform: translate(var(--drop-dx), var(--drop-dy)) translate(-50%, -50%);
+    }
+}
+
+.ball-preview {
+    position: absolute;
+    pointer-events: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #1976d2;
+    opacity: 0.5;
+    z-index: 50;
+    display: none;
+    font-size: 10px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    line-height: 36px;
+}
+
+.ball-preview.visible {
+    display: block;
+}
+
+.seesaw-cont {
+    position: relative;
+    background: #e8e8e8;
+    border: 1px solid #ccc;
+    padding: 50px 30px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.seesaw-wrapper {
+    position: relative;
+    width: 100%;
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pivot {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 24px;
+    height: 24px;
+    background: #c62828;
+    border-radius: 50%;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.plank-scale {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 400px;
+    height: 40px;
+    margin-left: -200px;
+    margin-top: -20px;
+    transform-origin: center center;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.plank-scale::before {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -25px;
+    font-size: 10px;
+    color: #888;
+    text-align: center;
+    white-space: pre;
+}
+
+.plank-scale .scale-tick {
+    position: absolute;
+    bottom: 0;
+    width: 1px;
+    height: 6px;
+    background: #999;
+}
+
+.plank-scale .scale-tick.major {
+    height: 10px;
+}
+
+.plank {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 400px;
+    height: 24px;
+    margin-left: -200px;
+    margin-top: -12px;
+    background: #5d4037;
+    border: 2px solid #3e2723;
+    transform-origin: center center;
+    transition: transform 0.4s ease;
+    z-index: 5;
+}
+
+.floor {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 12px;
+    background: #5d4037;
+    border: 1px solid #3e2723;
+}
+
+.obj {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.obj span {
+    position: absolute;
+    bottom: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    font-weight: bold;
+    white-space: nowrap;
+    color: #333;
+}
+
+.obj.landing {
+    animation: objLand 0.2s ease-out;
+}
+
+@keyframes objLand {
+    0% {
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.control {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.btn {
+    padding: 10px 24px;
+    font-size: 14px;
+    color: #333;
+    background: #fff;
+    border: 1px solid #999;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #eee;
+}
+
+.btn.pause {
+    background: #fff;
+}
+
+.btn.pause.paused {
+    background: #e8f5e9;
+    border-color: #4caf50;
+}
+
+.history-section {
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 15px;
+}
+
+.history-title {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.history-list {
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    font-size: 14px;
+    border-bottom: 1px solid #eee;
+}
+
+.history-item:last-child {
+    border-bottom: none;
+}
+
+.history-item .weight {
+    font-weight: bold;
+}
+
+.history-item .side {
+    padding: 2px 6px;
+    font-size: 12px;
+}
+
+.history-item .side.left {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.history-item .side.right {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.history-empty {
+    font-size: 14px;
+    color: #999;
+    padding: 5px 0;
+}
+
+
+/* ball colors - simple solid colors */
+
+.obj.color-1 {
+    background: #e53935;
+}
+
+.obj.color-2 {
+    background: #1976d2;
+}
+
+.obj.color-3 {
+    background: #7b1fa2;
+}
+
+.obj.color-4 {
+    background: #00897b;
+}
+
+.obj.color-5 {
+    background: #f9a825;
+}
+
+.obj.color-6 {
+    background: #5e35b1;
+}
+
+.obj.color-7 {
+    background: #00acc1;
+}
+
+.obj.color-8 {
+    background: #d84315;
+}
+
+.obj.color-9 {
+    background: #7e57c2;
+}
+
+.obj.color-10 {
+    background: #43a047;
+}
